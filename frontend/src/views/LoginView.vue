@@ -15,13 +15,14 @@
       </div>
       <div class="col-md-8">
         <div class="card-body">
-          <form action="" class="form">
+          <form action="" class="form" @submit.prevent="login">
             <template v-for="(field, key) of fields">
               <string-field :field-info="field.fieldInfo" v-model="loginInfo[field.modelKey]" />
             </template>
             <div class="text-center pt-1 mb-5 pb-1">
-              <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" type="button">Log
-                in</button>
+              <button type="submit" class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" :disabled="btnDisabled" :class="btnDisabled ? 'disabled' : ''">
+                Log in
+              </button>
               <a class="text-muted" href="!#">Forgot password?</a>
             </div>
             <div class="d-flex align-items-center justify-content-center pb-4">
@@ -43,37 +44,75 @@ export default {
   components: {
     StringField
   },
-  data : () => {
-    return {
-      fields : [
-        {
-          fieldInfo : {
-            class : 'mb-3',
-            addOnID : 'email-add-on',
-            icon : 'fa-solid fa-envelope-open',
-            type : 'email',
-            placeholder : 'Please enter e-mail address',
-          },
-          modelKey : 'email',
-        },
-        {
-          fieldInfo : {
-            class : 'mb-3',
-            addOnID : 'password-add-on',
-            icon : 'fa-solid fa-key',
-            type : 'password',
-            placeholder : 'Please enter password'
-          },
-          modelKey : 'password',
-        }
-      ],
-      loginInfo : {
-        email: '',
-        password: ''
-      }
-    }
-  }
 }
+</script>
+
+<script setup>
+import {reactive, ref} from "vue";
+import axios         from '../axios'
+import UseAuthStore  from "../stores/auth";
+import router          from "../router";
+
+  // Necessary objects
+  const fields = reactive([
+    {
+      fieldInfo : {
+        class : 'mb-3',
+        addOnID : 'email-add-on',
+        icon : 'fa-solid fa-envelope-open',
+        type : 'email',
+        placeholder : 'Please enter e-mail address',
+      },
+      modelKey : 'email',
+    },
+    {
+      fieldInfo : {
+        class : 'mb-3',
+        addOnID : 'password-add-on',
+        icon : 'fa-solid fa-key',
+        type : 'password',
+        placeholder : 'Please enter password'
+      },
+      modelKey : 'password',
+    }
+  ]);
+  const loginInfo = reactive({
+    email: '',
+    password: ''
+  })
+  const auth = UseAuthStore();
+  const btnDisabled = ref(false);
+  //methods
+  const login = async () => {
+    btnDisabled.value = true;
+    await axios.post('login', loginInfo)
+        .then(data => {
+          btnDisabled.value = false;
+          let status = data.status;
+          let loginDetails = data.data;
+          if(status === 202){
+            auth.setAuthenticatedUser(loginDetails);
+            router.push('/');
+          } else {
+            console.log(data);
+          }
+        })
+        .catch( err => {
+          if(err.response){
+            let status = err.response.status;
+            let errors = err.response.data.errors;
+            let message = err.message;
+            if(status === 422 || status === 401){
+              fields.forEach( field => {
+                field.fieldInfo.error = errors[field.modelKey];
+              })
+            } else {
+              console.log(message);
+            }
+          }
+          btnDisabled.value = false;
+        })
+  }
 </script>
 
 <style scoped>

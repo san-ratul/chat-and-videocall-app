@@ -27,12 +27,12 @@ class AuthenticationController extends Controller
             'password' => ['required', 'confirmed'],
             'image' => ['required', 'image']
         ]);
-        $input = $request->only(['name', 'email']);
+        $input                  = $request->only(['name', 'email']);
         $input['profile_image'] = $this->uploadImage($request);
-        $input['password'] = Hash::make($request->password);
-        $user = User::create($input);
-        $success['token'] =  $user->createToken('VideoChatApp')->accessToken;
-        $success['name'] =  $user->name;
+        $input['password']      = Hash::make($request->password);
+        $user                   = User::create($input);
+        $success['user']        =  UserResource::make($user);
+        $success['token']       =  $user->createToken('VideoChatApp')->accessToken;
         return response()->json($success, Response::HTTP_ACCEPTED);
     }
 
@@ -61,19 +61,35 @@ class AuthenticationController extends Controller
         return response()->json($users, Response::HTTP_OK);
     }
 
-    public function login(Request $request){
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function login(Request $request): JsonResponse
+    {
         $this->validate($request, [
             'email' => ['required', 'email'],
             'password' => ['required']
         ]);
         if($user = User::query()->where('email', $request->email)->first()){
             if(Hash::check($request->password, $user->password)){
-                $success['name'] =  $user->name;
+                $success['user']  =  UserResource::make($user);
                 $success['token'] =  $user->createToken('VideoChatApp')->accessToken;
                 return response()->json($success, Response::HTTP_ACCEPTED);
             }
         }
-        $error['errors']['email'] = "User credential mismatch";
+        $error['errors']['email'] = ["Credentials did not match"];
         return response()->json($error, Response::HTTP_UNAUTHORIZED);
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function logout(): JsonResponse
+    {
+        $token = auth()->user()->token();
+        $token->revoke();
+        $response = ['message' => 'You have been successfully logged out!'];
+        return response()->json($response, Response::HTTP_ACCEPTED);
     }
 }

@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import HomeView                           from '../views/HomeView.vue'
+import UseAuthStore                       from "../stores/auth";
+import isEmpty                            from "../is_empty";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -7,18 +9,27 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView
+      component: HomeView,
+      meta: {
+        auth: true
+      }
     },
     {
       path: '/login',
       name: 'login',
       component: () => import('../views/LoginView.vue'),
+      meta: {
+        guest: true
+      }
 
     },
     {
       path: '/register',
       name: 'register',
       component: () => import('../views/RegisterView.vue'),
+      meta: {
+        guest: true
+      }
 
     },
     {
@@ -30,6 +41,31 @@ const router = createRouter({
       component: () => import('../views/AboutView.vue')
     }
   ]
+})
+router.beforeEach((to, from, next) => {
+  window.scrollTo(0, 0)
+  const auth = UseAuthStore();
+  if (to.matched.some(record => record.meta.auth)) {
+    if (isEmpty(auth.getToken)) {
+      next({
+        path: '/login',
+        params: {nextUrl: to.fullPath}
+      })
+    } else {
+      next()
+    }
+  } else if (to.matched.some(record => record.meta.guest)) {
+    if (isEmpty(auth.getToken)) {
+      next()
+    } else {
+      next({
+        path: '/',
+        params: {nextUrl: to.fullPath}
+      })
+    }
+  } else {
+    next()
+  }
 })
 
 export default router

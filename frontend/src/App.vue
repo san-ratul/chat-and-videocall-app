@@ -1,13 +1,17 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
+import Navigation                 from "./components/navbar/Navigation.vue";
 </script>
 
 <template>
-  <section class="body-bg-color">
-    <div class="container py-5">
-      <RouterView />
-    </div>
-  </section>
+  <div class="body-bg-color">
+    <navigation />
+    <section>
+      <div class="container py-4">
+        <RouterView />
+      </div>
+    </section>
+  </div>
 </template>
 
 <style>
