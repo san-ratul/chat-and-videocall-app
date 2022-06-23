@@ -1,6 +1,7 @@
 import axios         from 'axios'
 import isEmpty       from "./is_empty";
 import UseAuthStore  from "./stores/auth";
+
 const instance = axios.create({
    baseURL: import.meta.env.VITE_API_URL
 });
@@ -17,12 +18,14 @@ instance.interceptors.request.use(
 
 instance.interceptors.response.use(
     (response) => {
+        return response
+    }, (error) => {
         const auth = UseAuthStore();
-        if( response.status === 401 ) {
+        if( error.response.status === 401 ) {
             auth.logoutAuthenticatedUser();
             location.reload()
         }
-        return response
+        return error;
     }
 )
 

@@ -1,7 +1,6 @@
 <template>
   <div class="text-muted d-flex justify-content-start align-items-center pe-3 pt-3 mt-2">
-    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava6-bg.webp"
-         alt="avatar 3" style="width: 40px; height: 100%;">
+    <img :src="user.image" alt="user.name" style="width: 40px; height: 100%; border-radius: 50%">
     <input type="text" class="form-control form-control-lg" id="exampleFormControlInput2"
            placeholder="Type message">
     <a class="ms-1 text-muted" href="#!">
@@ -20,6 +19,15 @@
 export default {
   name: "MessageInputBox"
 }
+</script>
+
+<script setup>
+  import UseAuthStore from "../../../stores/auth";
+  import isEmpty      from "../../../is_empty";
+
+  const auth = UseAuthStore();
+  const user = !isEmpty(auth.user) ? auth.user : {};
+
 </script>
 
 <style scoped>

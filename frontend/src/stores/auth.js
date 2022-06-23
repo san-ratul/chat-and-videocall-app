@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
-import isEmpty from "../is_empty";
+import isEmpty         from "../is_empty";
+import UseChatStore    from "./chat";
 
 const UseAuthStore = defineStore({
     id: 'auth',
@@ -19,6 +20,8 @@ const UseAuthStore = defineStore({
             localStorage.setItem('auth', JSON.stringify(payload));
         },
         logoutAuthenticatedUser(){
+            const chatStore = UseChatStore();
+            chatStore.$reset();
             localStorage.removeItem('auth');
             this.user = {};
             this.token = false;
