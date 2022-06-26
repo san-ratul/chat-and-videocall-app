@@ -18,7 +18,9 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
-            'image' => asset($this->profile_image),
+            'image' => !empty($this->profile_image)
+                ? asset($this->profile_image)
+                : "https://ui-avatars.com/api/?name=".str_replace(' ', '+',trim($this->name))."&size=128&color=fff&background=B23CFD&rounded=true",
         ];
     }
 }

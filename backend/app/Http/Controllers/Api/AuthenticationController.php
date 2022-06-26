@@ -79,7 +79,7 @@ class AuthenticationController extends Controller
             }
         }
         $error['errors']['email'] = ["Credentials did not match"];
-        return response()->json($error, Response::HTTP_UNAUTHORIZED);
+        return response()->json($error, Response::HTTP_BAD_REQUEST);
     }
 
     /**

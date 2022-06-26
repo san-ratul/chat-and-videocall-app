@@ -25,7 +25,7 @@ instance.interceptors.response.use(
             auth.logoutAuthenticatedUser();
             location.reload()
         }
-        return error;
+        return Promise.reject(error);
     }
 )
 

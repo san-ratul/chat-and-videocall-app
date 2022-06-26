@@ -102,7 +102,7 @@ import router          from "../router";
             let status = err.response.status;
             let errors = err.response.data.errors;
             let message = err.message;
-            if(status === 422 || status === 401){
+            if(status === 422 || status === 400){
               fields.forEach( field => {
                 field.fieldInfo.error = errors[field.modelKey];
               })
