@@ -17,9 +17,11 @@ class MessageResource extends JsonResource
         return [
             'id' => $this->id,
             'message' => $this->message,
-            'receiver' => $this->receiver_id === auth()->user()->id,
+            'sender' => $this->sender_id === auth()->user()->id,
             'senderImage' => getProfileImagePath($this->sender->profile_image, $this->sender->name),
+            'senderName' => $this->sender->name,
             'receiverImage' => getProfileImagePath($this->receiver->profile_image, $this->receiver->name),
+            'receiverName' => $this->receiver->name,
             'time' => $this->created_at->format('h:i A | M d'),
         ];
     }

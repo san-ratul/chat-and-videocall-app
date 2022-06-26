@@ -15,16 +15,27 @@ const UseChatStore = defineStore({
     actions: {
         async setUserList() {
             if(isEmpty(this.userList)) {
-                await axios.get("/users").then(response => {
+                await axios.get("/users").then(async response => {
                     this.userList = response.data;
-                    this.selectedUser = response.data[0];
+                    await this.setSelectedUser(this.userList[0])
                 });
             } else{
-                this.selectedUser = this.userList[0];
+                await this.setSelectedUser(this.userList[0])
             }
         },
-        setSelectedUser(user) {
+        async getSelectedUserMessages($userId) {
+            await axios.get(`/messages/${$userId}`)
+                .then(response => {
+                    this.messages = response.data;
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        },
+        async setSelectedUser(user) {
+            this.messages = [];
             this.selectedUser = user;
+            await this.getSelectedUserMessages(user.id);
         }
     }
 })
