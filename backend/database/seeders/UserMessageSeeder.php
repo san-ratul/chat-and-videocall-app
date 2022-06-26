@@ -24,6 +24,5 @@ class UserMessageSeeder extends Seeder
             ]);
         }
         Message::factory(50)->create();
-
     }
 }

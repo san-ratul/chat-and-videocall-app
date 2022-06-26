@@ -11,20 +11,22 @@
           >
           <span class="badge bg-success badge-dot"></span>
         </div>
-        <div class="pt-1">
+        <div class="pt-1 mx-1">
           <p class="fw-bold mb-0">{{ user.name }}</p>
-          <p class="small text-muted">Hello, Are you there?</p>
+          <p class="small text-muted">{{ user.last_message }}</p>
         </div>
       </div>
-      <div class="pt-1">
-        <p class="small text-muted mb-1">Just now</p>
-        <span class="badge bg-danger rounded-pill float-end">3</span>
+      <div class="pt-1" v-if="!empty(user.time)">
+        <p class="small text-muted mb-1">{{ user.time }}</p>
+<!--        <span class="badge bg-danger rounded-pill float-end">3</span>-->
       </div>
     </a>
   </li>
 </template>
 
 <script>
+import is_empty from "../../../is_empty";
+
 export default {
   name: "UserListItem",
   props: {
@@ -37,6 +39,11 @@ export default {
       default: false
     }
   },
+  methods: {
+    empty(value) {
+      return is_empty(value)
+    },
+  }
 }
 </script>
 
