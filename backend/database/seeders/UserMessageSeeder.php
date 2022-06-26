@@ -23,6 +23,7 @@ class UserMessageSeeder extends Seeder
                 'receiver_id' => (!($i%2)) + 1,
             ]);
         }
+        Message::factory(50)->create();
 
     }
 }
