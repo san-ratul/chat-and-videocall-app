@@ -44,4 +44,18 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function messages($userId)
+    {
+        $message = Message::query()->where(function($query) use ($userId) {
+            $query->where('sender_id', $this->id)
+                ->where('receiver_id', $userId);
+        })
+            ->orWhere(function($query) use ($userId) {
+                $query->where('sender_id', $userId)
+                    ->where('receiver_id', $this->id);
+            })
+            ->orderBy('id', 'desc')
+            ->paginate(10);
+        return $message;
+    }
 }

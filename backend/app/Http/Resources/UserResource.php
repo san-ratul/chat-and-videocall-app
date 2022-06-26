@@ -31,9 +31,7 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
-            'image' => !empty($this->profile_image)
-                ? asset($this->profile_image)
-                : "https://ui-avatars.com/api/?name=".str_replace(' ', '+',trim($this->name))."&size=128&color=fff&background=B23CFD&rounded=true",
+            'image' => getProfileImagePath($this->profile_image, $this->name),
             'last_message' => !empty($message)
                 ? substr($message->message,0,15) . '...' ??
                   '' :

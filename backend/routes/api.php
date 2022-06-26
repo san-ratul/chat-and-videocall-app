@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthenticationController;
+use App\Http\Controllers\Api\MessageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,4 +21,5 @@ Route::post('login', [AuthenticationController::class, 'login']);
 Route::group(['middleware' => 'auth:api'], function() {
     Route::post('logout', [AuthenticationController::class, 'logout']);
     Route::get('users', [AuthenticationController::class, 'getUsers']);
+    Route::get('messages/{user}', [MessageController::class, 'getMessages']);
 });
