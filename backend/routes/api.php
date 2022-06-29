@@ -22,4 +22,5 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('logout', [AuthenticationController::class, 'logout']);
     Route::get('users', [AuthenticationController::class, 'getUsers']);
     Route::get('messages/{user}', [MessageController::class, 'getMessages']);
+    Route::post('messages/{user}', [MessageController::class, 'storeMessage']);
 });

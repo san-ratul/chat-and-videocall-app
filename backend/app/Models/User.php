@@ -58,4 +58,18 @@ class User extends Authenticatable
             ->paginate(10);
         return $message;
     }
+
+    /**
+     * @param $userId
+     * @param $message
+     * @return mixed
+     */
+    public function sendMessage($userId, $message): mixed
+    {
+        return Message::create([
+            'sender_id' => $this->id,
+            'receiver_id' => $userId,
+            'message' => $message,
+        ]);
+    }
 }
