@@ -4,10 +4,20 @@
 
       <div class="row">
         <div class="col-md-12">
-
+          <div class="alert alert-danger mt-1 text-center position-relative" v-if="!is_empty(chat.sendMessageError)">
+            <button
+                type="button"
+                class="btn-close position-absolute"
+                style="top:10px; right: 10px" aria-label="Close"
+                @click="chat.sendMessageError = ''"
+            >
+            </button>
+            <p v-for="error in chat.sendMessageError">
+              <strong>Error!</strong> <span>{{error}}</span>
+            </p>
+          </div>
           <div class="card" id="chat3" style="border-radius: 15px;">
             <div class="card-body">
-
               <div class="row">
                 <chat-sidebar />
                 <chat-box />
@@ -30,6 +40,12 @@ export default {
   name: "HomeView",
   components: {ChatSidebar, ChatBox},
 }
+</script>
+<script setup>
+  import UseChatStore from "../stores/chat";
+  import is_empty     from "../is_empty";
+
+  const chat = UseChatStore();
 </script>
 
 <style>

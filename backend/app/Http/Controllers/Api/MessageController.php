@@ -34,4 +34,13 @@ class MessageController extends Controller
         $message = auth()->user()->sendMessage($user->id, $request->message);
         return response()->json(new MessageResource($message), Response::HTTP_ACCEPTED);
     }
+
+    /**
+     * @return JsonResponse
+     */
+    public function getDemoUsers(): JsonResponse
+    {
+        $users = User::limit(2)->get();
+        return response()->json($users, Response::HTTP_ACCEPTED);
+    }
 }

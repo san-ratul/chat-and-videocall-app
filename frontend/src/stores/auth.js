@@ -7,6 +7,7 @@ const UseAuthStore = defineStore({
     state: () => ({
         user: !isEmpty(localStorage.getItem('auth')) ? JSON.parse(localStorage.getItem('auth')).user : {},
         token: !isEmpty(localStorage.getItem('auth')) ? JSON.parse(localStorage.getItem('auth')).token : false,
+        demoUsers: [],
     }),
     getters: {
         isAuthenticated : (state) => !isEmpty(state.user),

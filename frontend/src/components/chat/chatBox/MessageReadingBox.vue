@@ -24,8 +24,8 @@ export default {
 }
 </script>
 <script setup>
-  import UseChatStore                                   from "../../../stores/chat";
-  import {computed, onMounted, ref, watch} from "vue";
+  import UseChatStore                                 from "../../../stores/chat";
+  import {computed, onMounted, onUpdated, ref, watch} from "vue";
   const chat = UseChatStore();
   const messageListLoading = computed(() => chat.messages.length === 0);
   const chatBox = ref(null);
@@ -35,7 +35,7 @@ export default {
     const interval = setInterval(() => {
       intervalCount.value++;
       if (chatBox.value.scrollHeight > chatBox.value.clientHeight) {
-        chatBox.value.scrollTop = chatBox.value.scrollHeight;
+        scrollToBottom();
         intervalCount.value = 0;
         clearInterval(interval);
       }
@@ -45,12 +45,17 @@ export default {
       }
     }, 1000);
   };
+  const scrollToBottom = () => {
+    if (chatBox.value.scrollHeight > chatBox.value.clientHeight) {
+      chatBox.value.scrollTop = chatBox.value.scrollHeight;
+    }
+  };
   onMounted(() => {
     scrollCheck();
   });
-  watch(() => chat.messages, () => {
+  onUpdated(() => {
     if (chat.messages.length > 0) {
-      scrollCheck();
+      scrollToBottom();
     }
   });
 

@@ -35,6 +35,15 @@
     </div>
   </div>
 </div>
+<div class="d-flex justify-content-center mt-3">
+  <div class="demo-users-list">
+    <ul class="list-group">
+      <li class="list-group-item" style="cursor: pointer" v-for="user in auth.demoUsers" @click.prevent="loginAsUser(user)">
+        {{user.name}} : {{user.email}}
+      </li>
+    </ul>
+  </div>
+</div>
 </template>
 
 <script>
@@ -48,8 +57,8 @@ export default {
 </script>
 
 <script setup>
-import {reactive, ref} from "vue";
-import axios         from '../axios'
+import {onMounted, reactive, ref} from "vue";
+import axios                      from '../axios'
 import UseAuthStore  from "../stores/auth";
 import router          from "../router";
 
@@ -113,6 +122,21 @@ import router          from "../router";
           btnDisabled.value = false;
         })
   }
+  const loginAsUser = (user) => {
+    loginInfo.email = user.email;
+    loginInfo.password = 'password';
+    login();
+    return null;
+  }
+  onMounted(() => {
+    axios.get('/demo-users')
+        .then(data => {
+          auth.demoUsers = data.data;
+        })
+        .catch( err => {
+          console.log(err);
+        })
+  })
 </script>
 
 <style scoped>
